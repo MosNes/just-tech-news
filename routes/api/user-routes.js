@@ -50,6 +50,39 @@ router.post('/', (req, res) => {
         });
 });
 
+//user login route
+//uses POST to send the PW as part of the request body instead of a plaintext query parameter used by GET
+router.post('/login', (req, res) => {
+
+    //expects {email: 'email@domain.com', password: 'userpassword'}
+
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+        .then(async dbUserData => {
+            if (!dbUserData) {
+                res.status(400).json({ message: 'No user found with that email address!' });
+                return;
+            }
+
+            //load hash from your password DB
+            const validPassword = await dbUserData.checkPassword(req.body.password);
+
+            if (!validPassword) {
+                res.status(400).json({ message: "Incorrect Password!" });
+                return;
+            }
+
+            res.json({ user: dbUserData, message: 'You are now logged in!' });
+
+            //verify user
+
+        });
+
+});
+
 //PUT /api/users
 router.put('/:id', (req, res) => {
     // expects {username: 'user', email: 'user@user.com', password: 'password'}
