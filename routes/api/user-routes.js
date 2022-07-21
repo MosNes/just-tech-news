@@ -55,7 +55,9 @@ router.put('/:id', (req, res) => {
     // expects {username: 'user', email: 'user@user.com', password: 'password'}
 
     //if req.body has exact key/value  pairs to match the model, you can just use 'req.body' instead
+    //requires individualHooks: true to activate the beforeUpdate() hook in the User model
     User.update(req.body, {
+        individualHooks: true,
         where: {
             id: req.params.id
         }
