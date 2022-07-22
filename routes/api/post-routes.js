@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { Post, User } = require('../../models');
+const { Post, User, Vote } = require('../../models');
+const sequelize = require('../../config/connection');
 
 //get all posts
 router.get('/', (req, res) => {
@@ -67,6 +68,16 @@ router.post('/', (req, res) => {
     });
 });
 
+//add vote to post, has to come before PUT /:id route or else Express will think 'upvote' is the ID
+router.put('/upvote', (req, res) => {
+    Vote.create({
+        user_id: req.body.user_id,
+        post_id: req.body.post_id
+    })
+    .then(dbPostData => res.json(dbPostData))
+    .catch(err => res.json(err));
+});
+
 //update post title
 router.put('/:id', (req, res) => {
     Post.update(
@@ -111,6 +122,8 @@ router.delete('/:id', (req, res) => {
         res.status(500).json(err);
     });
 });
+
+
 
 
 module.exports = router;
