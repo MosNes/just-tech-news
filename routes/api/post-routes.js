@@ -91,30 +91,9 @@ router.post('/', (req, res) => {
 
 //add vote to post, has to come before PUT /:id route or else Express will think 'upvote' is the ID
 router.put('/upvote', (req, res) => {
-    Vote.create({
-        user_id: req.body.user_id,
-        post_id: req.body.post_id
-    })
-    .then(() => {
-        //find the post user just voted on
-        return Post.findOne({
-            where: {
-                id: req.body.post_id
-            },
-            attributes: [
-                'id',
-                'post_url',
-                'title',
-                'created_at',
-                //user raw MySQL aggregate function query to get a count of how many votes
-                //the post has and return it under the name 'vote_count'
-                [
-                    sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'),
-                    'vote_count'
-                ]
-            ]
-        })
-    })
+    //custom static method created in models/Post.js
+
+    Post.upvote(req.body, { Vote })
     .then(dbPostData => res.json(dbPostData))
     .catch(err => {
         console.log(err);
