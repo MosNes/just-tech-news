@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Post, User, Vote } = require('../../models');
+const { Post, User, Vote, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
 
 //get all posts
@@ -20,6 +20,14 @@ router.get('/', (req, res) => {
         ],
         order: [['created_at', 'DESC']],
         include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
             {
                 model: User,
                 attributes: ['username']
@@ -54,11 +62,19 @@ router.get('/:id', (req, res) => {
         ],
         include: [
             {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
+            {
                 model: User,
                 attributes: ['username']
             }
         ]
-       })
+    })
         .then(dbPostData => {
             if (!dbPostData) {
                 res.status(404).json({ message: 'No post found with this id' });
@@ -80,13 +96,13 @@ router.post('/', (req, res) => {
         post_url: req.body.post_url,
         user_id: req.body.user_id
     })
-    .then(dbPostData => res.json(dbPostData))
-    .catch(err => {
-        console.log(err => {
-            console.log(err);
-            res.status(500).json(err);
+        .then(dbPostData => res.json(dbPostData))
+        .catch(err => {
+            console.log(err => {
+                console.log(err);
+                res.status(500).json(err);
+            });
         });
-    });
 });
 
 //add vote to post, has to come before PUT /:id route or else Express will think 'upvote' is the ID
@@ -94,11 +110,11 @@ router.put('/upvote', (req, res) => {
     //custom static method created in models/Post.js
 
     Post.upvote(req.body, { Vote })
-    .then(dbPostData => res.json(dbPostData))
-    .catch(err => {
-        console.log(err);
-        res.status(400).json(err);
-    });
+        .then(dbPostData => res.json(dbPostData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
 });
 
 //update post title
@@ -113,17 +129,17 @@ router.put('/:id', (req, res) => {
             }
         }
     )
-    .then(dbPostData => {
-        if(!dbPostData) {
-            res.status(400).json({message: 'No post found with this id'});
-            return;
-        }
-        res.json(dbPostData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(dbPostData => {
+            if (!dbPostData) {
+                res.status(400).json({ message: 'No post found with this id' });
+                return;
+            }
+            res.json(dbPostData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 //delete a post
@@ -133,17 +149,17 @@ router.delete('/:id', (req, res) => {
             id: req.params.id
         }
     })
-    .then(dbPostData => {
-        if (!dbPostData) {
-            res.status(404).json({message: 'No post found with this id'});
-            return;
-        }
-        res.json(dbPostData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(dbPostData => {
+            if (!dbPostData) {
+                res.status(404).json({ message: 'No post found with this id' });
+                return;
+            }
+            res.json(dbPostData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 
