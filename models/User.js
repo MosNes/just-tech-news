@@ -47,7 +47,7 @@ User.init(
             allowNull: false,
             validate: {
                 //must be at least 8 chars long
-                len: [4]
+                len: [8]
             }
         },
         
