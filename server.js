@@ -4,7 +4,7 @@ require('dotenv').config();
 //---------------------DEPENDENCIES AND GLOBAL VARIABLES--------------------------------------
 const path = require('path');
 const express = require('express');
-const routes = require('./routes');
+const routes = require('./controllers/');
 const sequelize = require('./config/connection');
 //handlebars for express
 const exphbs = require('express-handlebars');
