@@ -3,7 +3,7 @@ const { Post, User, Comment } = require('../models');
 
 const router = require('express').Router();
 
-//default route
+//default route, loads homepage and all posts from the DB
 router.get('/', (req, res) => {
 
     Post.findAll({
@@ -44,6 +44,11 @@ router.get('/', (req, res) => {
             res.status(500).json(err);
         });
 
+});
+
+//login page route
+router.get('/login', (req, res) => {
+    res.render('login');
 });
 
 module.exports = router;
