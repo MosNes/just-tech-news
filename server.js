@@ -6,6 +6,9 @@ const path = require('path');
 const express = require('express');
 const routes = require('./routes');
 const sequelize = require('./config/connection');
+//handlebars for express
+const exphbs = require('express-handlebars');
+const hbs = exphbs.create({});
 
 
 const app = express();
@@ -16,6 +19,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //required for users to see static assets in the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+//required for Express Handlebars
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 
 //Routes
 app.use(routes);
