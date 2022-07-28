@@ -9,6 +9,19 @@ const sequelize = require('./config/connection');
 //handlebars for express
 const exphbs = require('express-handlebars');
 const hbs = exphbs.create({});
+//sessions for express, and connect-session-sequelize to write session data to the db using sequelize
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const sess = {
+    secret: process.env.SESS_SECRET,
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize
+    })
+};
 
 
 const app = express();
@@ -22,6 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //required for Express Handlebars
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+//required to use sessions
+app.use(session(sess));
 
 //Routes
 app.use(routes);
