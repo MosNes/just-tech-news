@@ -55,7 +55,9 @@ router.get('/:id', (req, res) => {
         });
 });
 
-//POST /api/users
+//creates new user
+//user POST to add email, username, and password to the user table in the database, then creates a session for the user
+//PW is hashed by the User model before being saved to the DB
 router.post('/', (req, res) => {
     // expects {username: 'user', email: 'user@user.com', password: 'password'}
     User.create({
@@ -117,6 +119,17 @@ router.post('/login', (req, res) => {
             //verify user
 
         });
+});
+
+//user logout route
+router.post('/logout', (req, res) => {
+    if (req.session.loggedIn) {
+        req.session.destroy( () => {
+            res.status(204).end();
+        });
+    } else {
+        res.status(404).end();
+    }
 });
 
 //PUT /api/users
