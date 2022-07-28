@@ -6,6 +6,8 @@ const router = require('express').Router();
 //default route, loads homepage and all posts from the DB
 router.get('/', (req, res) => {
 
+    console.log(req.session);
+
     Post.findAll({
         attributes: [
             'id',
@@ -48,6 +50,13 @@ router.get('/', (req, res) => {
 
 //login page route
 router.get('/login', (req, res) => {
+    
+    //if user is logged in, redirect to homepage
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+
     res.render('login');
 });
 
