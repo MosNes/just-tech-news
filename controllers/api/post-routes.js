@@ -107,14 +107,18 @@ router.post('/', (req, res) => {
 
 //add vote to post, has to come before PUT /:id route or else Express will think 'upvote' is the ID
 router.put('/upvote', (req, res) => {
-    //custom static method created in models/Post.js
+    //check if the session exists first
+    if (req.session) {
+        //pass in session id along with destructured properties on req.body
+        // .upvote() is custom static method created in models/Post.js
 
-    Post.upvote(req.body, { Vote })
-        .then(dbPostData => res.json(dbPostData))
-        .catch(err => {
-            console.log(err);
-            res.status(400).json(err);
-        });
+        Post.upvote({ ...req.body, user_id: req.session.user_id }, { Vote, Comment, User })
+            .then(updatedVoteData => res.json(updatedVoteData))
+            .catch(err => {
+                console.log(err);
+                res.status(500).json(err);
+            });
+    }
 });
 
 //update post title
