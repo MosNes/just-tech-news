@@ -22,7 +22,8 @@ async function signupFormHandler(event) {
         //check response data
         if (response.ok) {
             console.log('success');
-            document.location.replace('/');
+            //if succesfully logged in, redirect to dashboard
+            document.location.replace('/dashboard');
         } else {
             //throw error alert
             alert(response.statusText);
@@ -52,7 +53,8 @@ async function loginFormHandler(event) {
         
         //check response data
         if (response.ok) {
-            document.location.replace('/');
+            //if succesfully logged in, redirect to dashboard
+            document.location.replace('/dashboard');
         } else {
             //throw error alert
             alert(response.statusText);
