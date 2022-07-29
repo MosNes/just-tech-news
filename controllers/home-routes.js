@@ -39,7 +39,10 @@ router.get('/', (req, res) => {
             const posts = dbPostData.map(post => post.get({ plain: true }));
 
             //pass array of formatted post objects into the homepage template
-            res.render('homepage', { posts });
+            res.render('homepage', {
+                posts,
+                loggedIn: req.session.loggedIn
+            });
         })
         .catch(err => {
             console.log(err);
@@ -98,7 +101,11 @@ router.get('/post/:id', (req, res) => {
             const post = dbPostData.get({ plain: true });
 
             //pass data to template
-            res.render('single-post', { post });
+            //the session.loggedIn is passed to the template so the template can render differently based on whether a user is logged in
+            res.render('single-post', {
+                post,
+                loggedIn: req.session.loggedIn
+            });
         })
         .catch(err => {
             console.log(err);
