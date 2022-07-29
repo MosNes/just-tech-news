@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const withAuth = require('../../utils/auth');
 const { User, Post, Vote, Comment } = require('../../models');
 
 //GET /api/users
@@ -58,7 +59,7 @@ router.get('/:id', (req, res) => {
 //creates new user
 //user POST to add email, username, and password to the user table in the database, then creates a session for the user
 //PW is hashed by the User model before being saved to the DB
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     // expects {username: 'user', email: 'user@user.com', password: 'password'}
     User.create({
         username: req.body.username,
@@ -83,7 +84,7 @@ router.post('/', (req, res) => {
 
 //user login route
 //uses POST to send the PW as part of the request body instead of a plaintext query parameter used by GET
-router.post('/login', (req, res) => {
+router.post('/login', withAuth, (req, res) => {
 
     //expects {email: 'email@domain.com', password: 'userpassword'}
 
@@ -122,7 +123,7 @@ router.post('/login', (req, res) => {
 });
 
 //user logout route
-router.post('/logout', (req, res) => {
+router.post('/logout', withAuth, (req, res) => {
     if (req.session.loggedIn) {
         req.session.destroy( () => {
             res.status(204).end();
@@ -133,7 +134,7 @@ router.post('/logout', (req, res) => {
 });
 
 //PUT /api/users
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
     // expects {username: 'user', email: 'user@user.com', password: 'password'}
 
     //if req.body has exact key/value  pairs to match the model, you can just use 'req.body' instead
@@ -158,7 +159,7 @@ router.put('/:id', (req, res) => {
 });
 
 //DELETE /api/users
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     User.destroy({
         where: {
             id: req.params.id

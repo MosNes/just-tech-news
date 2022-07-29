@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const withAuth = require('../../utils/auth');
 const { Post, User, Vote, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
 
@@ -89,7 +90,7 @@ router.get('/:id', (req, res) => {
 });
 
 //create a post
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     //expects {title: 'This is a title', post_url: 'https://domain.com/stuff', user_id: 1}
     Post.create({
         title: req.body.title,
@@ -106,7 +107,7 @@ router.post('/', (req, res) => {
 });
 
 //add vote to post, has to come before PUT /:id route or else Express will think 'upvote' is the ID
-router.put('/upvote', (req, res) => {
+router.put('/upvote', withAuth, (req, res) => {
     //check if the session exists first
     if (req.session) {
         //pass in session id along with destructured properties on req.body
@@ -122,7 +123,7 @@ router.put('/upvote', (req, res) => {
 });
 
 //update post title
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
     Post.update(
         {
             title: req.body.title
@@ -147,7 +148,7 @@ router.put('/:id', (req, res) => {
 });
 
 //delete a post
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     Post.destroy({
         where: {
             id: req.params.id
