@@ -15,6 +15,7 @@ const hbs = exphbs.create({ helpers });
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+//reconfig for heroku?
 const sess = {
     secret: process.env.SESS_SECRET,
     cookie: {},
