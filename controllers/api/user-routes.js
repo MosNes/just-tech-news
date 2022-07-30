@@ -84,7 +84,7 @@ router.post('/', withAuth, (req, res) => {
 
 //user login route
 //uses POST to send the PW as part of the request body instead of a plaintext query parameter used by GET
-router.post('/login', withAuth, (req, res) => {
+router.post('/login', (req, res) => {
 
     //expects {email: 'email@domain.com', password: 'userpassword'}
 
